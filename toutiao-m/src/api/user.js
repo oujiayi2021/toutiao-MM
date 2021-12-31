@@ -45,3 +45,11 @@ export const getUserinfo = () => {
         // }
     })
 }
+
+//获取用户频道列表
+export const getUserChannels = () => {
+    return request({
+        method: 'GET',
+        url: '/v1_0/user/channels',
+    })
+}

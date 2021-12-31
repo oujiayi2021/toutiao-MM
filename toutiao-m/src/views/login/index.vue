@@ -60,7 +60,7 @@ export default {
     data() {
         return { 
             user:{
-                mobile:'13734284272', 
+                mobile:'19814382326', 
                 code: '246810',
             },
             uesrFormRules:{ //表单验证规则数据
