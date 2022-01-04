@@ -1,23 +1,30 @@
 <template>
   <div class="article-list">
-      <van-list
+      <van-pull-refresh v-model="isLoading" @refresh="onRefresh" :success-text="refreshSuccessText" :success-duration="1500">
+        <van-list
         v-model="loading"
         :finished="finished"
         finished-text="没有更多了"
         :error.sync="error"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
-    >
-  <van-cell v-for="(article,index) in list" :key="index" :title="article.title" />
-</van-list>
+        >
+        <ArticleItem v-for="(article,index) in list" :key="index" :article='article'/>
+        <!-- <van-cell v-for="(article,index) in list" :key="index" :title="article.title" /> -->
+        </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
 import {getArticles} from '@/api/article.js'
+import ArticleItem from '@/components/article-item/index.vue'
 
 export default {
     name:"Articlelist",
+     components:{
+      ArticleItem
+    },
     props:{
         channel:{
             type:Object,
@@ -30,7 +37,9 @@ export default {
             loading: false,  //控制加载中的loading状态
             finished: false,  //控制数据加载结束的状态
             timestamp:null, //请求获取下一页数据的时间戳
-            error:false  //控制列表请求失败的提示状态
+            error:false,  //控制列表请求失败的提示状态
+            isLoading: false,
+            refreshSuccessText:''  //下拉刷新成功提示文本
         };
     },
      methods: {
@@ -83,10 +92,35 @@ export default {
              this.loading=false
          }
     },
+    //下拉刷新函数
+   async onRefresh() {
+        //请求获取数据
+            try {
+                 const {data}=await getArticles({  //将包含服务器需要传递的置顶参数发送给服务器，服务器会返回数据
+                 channel_id:this.channel.id, //频道ID
+                 timestamp:Date.now(),  //下拉刷新，每次请求获取最新数据，所以传递当前最新时间戳
+                                                        //用于请求之后页码数据的时间戳会在当前请求结果中返回给你
+                 with_top :1   // 是否包含置顶
+             })
+            //将数据追加到列表的顶部
+            const {results}=data.data
+                this.list.unshift(...results)
+            //关闭下拉刷新的loading状态
+                this.isLoading=false
+            //更新下拉刷新成功提示文本
+                this.refreshSuccessText=`刷新成功,更新了${results.length}条数据`
+            } catch (error) {
+                this.isLoading=false
+                this.refreshSuccessText='刷新失败'
+        }
+    },
   },
 }
 </script>
 
-<style>
-
-</style>
+<style lang="less" scoped>
+.article-list{
+    height: 85vh;
+    overflow-y: auto;
+}
+</style>>

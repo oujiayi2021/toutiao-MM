@@ -60,7 +60,7 @@
     </van-grid-item>
 </van-grid>
 <van-cell title="消息通知" is-link />
-<van-cell class="mb-9" title="小智同学" is-link />
+<van-cell class="mb-9" title="小智同学" is-link @click="totoChat"/>
 <van-cell v-if="user" class="logout-cell" title="退出登录" @click="onLogout" clickable/>
   </div>
 </template>
@@ -100,6 +100,9 @@ export default {
         } catch (error) {
           this.$toast('获取用户信息失败，请稍后重试')
         }
+      },
+      totoChat(){
+        this.$router.push("./user-chat")
       }
     },
     created(){
