@@ -24,10 +24,17 @@
           <div class="info">
             <p>
               <span class="name">{{ item.aut_name }}</span>
-              <span class="zan"
+              <van-button 
+              class="zan" 
+              :class="{liked:item.is_liking}"
+              :icon="item.is_liking ? 'good-job' : 'good-job-o'"
+              @click="onLike(item.com_id,index)"
+              :loading="commentLoading"
+              >{{item.like_count || '赞'}}</van-button>
+              <!-- <span class="zan" 
                 >{{ item.like_count }}
-                <geek-icon :name="item.is_liking ? 'like-sel' : 'like2'" />
-              </span>
+                <i class="toutiao icon-a-dianzan2"></i>
+              </span> -->
             </p>
             <p class="cont">{{ item.content }}</p>
             <p>
@@ -35,7 +42,7 @@
                 >{{ item.reply_count }}回复
                 <i class="van-icon van-icon-arrow"></i
               ></span>
-              <span class="time">{{ item.pubdate | relativeTime }}</span>
+              <span class="time">{{ item.pubdate}}</span>
             </p>
           </div>
         </div>
@@ -65,7 +72,7 @@
     </div>
      <!-- 评论&回复 -->
     <van-popup v-model="showInput" position="bottom">
-      <van-nav-bar left-arrow @click-left="showInput=false" title="评论文章" right-text="发表" />
+      <van-nav-bar left-arrow @click-left="showInput=false" @click-right="AddComments" title="评论文章" right-text="发表" />
       <van-field
         v-model="text"
         rows="3"
@@ -79,7 +86,7 @@
   </div>
 </template>
 <script>
-import { getComments } from "@/api/article.js";
+import { getComments,addComments,addCommentLike,deleteCommentLike } from "@/api/article.js";
 export default {
   name: "ArticleComment",
   props: {
@@ -96,7 +103,8 @@ export default {
       offset: null,
       limit: 10,
       showInput: false,
-      text:''
+      text:'',
+      commentLoading:false,
     };
   },
   methods: {
@@ -126,6 +134,40 @@ export default {
         }
       } catch (error) {}
     },
+   async onLike(id,index){
+     this.commentLoading=true
+    try {
+      if(this.list[index].is_liking){
+        //已赞就取消点在
+      await deleteCommentLike(id)
+      this.list[index].like_count--
+      }else{
+        //没有点赞添加点赞
+      await addCommentLike(id)
+      this.list[index].like_count++
+      }
+      this.list[index].is_liking=!this.list[index].is_liking
+    } catch (error) {
+      this.$toast('操作失败请重试')
+      console.log(this.list.com_id)
+    }
+     this.commentLoading=false
+    },
+  async AddComments (){
+      try {
+        const {data}=await addComments({
+          target:this.source.art_id,    //评论的目标id（评论文章即为文章id，对评论进行回复则为评论id）
+          content:this.text,    //	评论内容	
+          art_id:null              //文章id，对评论内容发表回复时，需要传递此参数，表明所属文章id。对文章进行评论，不要传此参数。	
+        })
+        // console.log(data);
+        this.text=''
+        this.showInput=false
+        this.list.unshift(data.data.new_obj)
+      } catch (error) {
+        this.$toast('发布失败，请重试')
+      }
+    }
   },
   created() {
     setTimeout(() => {
@@ -168,11 +210,10 @@ export default {
             font-size: 14px;
             float: right;
             color: #999;
-            .geek-icon {
-              font-size: 12px;
-              position: relative;
-              top: -1px;
-            }
+            border: none;
+          }
+          .liked{
+            color: #e5645f;
           }
           &.cont {
             font-size: 14px;
@@ -229,6 +270,9 @@ export default {
       flex: 1;
       text-align: center;
       position: relative;
+    .btn span{
+        font-size: 16px;
+      }
       p {
         margin: 0;
         font-size: 10px;
