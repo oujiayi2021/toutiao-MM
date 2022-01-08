@@ -13,7 +13,7 @@
           <span class="name">{{userinfo.name}}</span>
          </div>
          <div class="right">
-           <van-button size="mini" round>编辑资料</van-button>
+           <van-button size="mini" round to="/user/profile">编辑资料</van-button>
          </div>
       </div>
       <div class="data-stats">
@@ -50,11 +50,11 @@
 
     <!-- 宫格导航 -->
     <van-grid class="grid-nav" :column-num="2" clickable>
-    <van-grid-item class="grid-item">
+    <van-grid-item class="grid-item" to="/collection">
       <i slot="icon" class="toutiao icon-shoucang"></i>
       <span slot="text" class="text">收藏</span>
     </van-grid-item>
-      <van-grid-item class="grid-item">
+      <van-grid-item class="grid-item" to="/history">
       <i slot="icon" class="toutiao icon-lishi"></i>
       <span slot="text" class="text">历史</span>
     </van-grid-item>

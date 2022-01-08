@@ -21,18 +21,34 @@
           <p class="name">{{ detail.aut_name }}</p>
           <p class="time">{{ detail.pubdate }}</p>
         </div>
-        <van-button v-if="detail.is_followed" :loading="followLoading" round @click="onFollow" size="small" type="primary">
+        <van-button
+          v-if="detail.is_followed"
+          :loading="followLoading"
+          round
+          @click="onFollow"
+          size="small"
+          type="primary"
+        >
           已关注
         </van-button>
-        <van-button v-else round @click="onFollow" :loading="followLoading" size="small" type="info">
+        <van-button
+          v-else
+          round
+          @click="onFollow"
+          :loading="followLoading"
+          size="small"
+          type="info"
+        >
           +关注
         </van-button>
       </div>
       <div class="content" v-html="detail.content"></div>
       <div class="zan">
+        <!-- 文章评论列表 -->
+       <ArticleComment :source="detail" />
       </div>
-      <!-- 文章评论列表 -->
-      <ArticleComment :source="detail"/>
+      
+ 
     </div>
   </div>
 </template>
@@ -44,13 +60,13 @@
  * 2.下次回来再回到滚动位置
  */
 import { getDetailById } from "@/api/detail.js";
-import {addFollow,deleteFollow} from '@/api/user.js'
-import ArticleComment from './components/article-comment.vue'
+import { addFollow, deleteFollow } from "@/api/user.js";
+import ArticleComment from "./components/article-comment.vue";
 // import Comment from './components/comment.vue'
 export default {
   name: "articleDetail",
   components: {
-    ArticleComment
+    ArticleComment,
   },
   props: {
     articleId: {
@@ -62,7 +78,7 @@ export default {
     return {
       detail: {},
       scrollTop: 0,
-      followLoading:false
+      followLoading: false,
     };
   },
   // 组件缓存后会被执行：1. 默认第一次组件创建也会执行 2. 再次进入还会再执行
@@ -85,25 +101,25 @@ export default {
       this.detail = data.data;
     },
     // 关注文章作者或取关
-   async onFollow(){
-       this.followLoading=true
-       try {
-           if(this.detail.is_followed){
-               //已关注就取消关注
-               const {data}=await deleteFollow(this.detail.aut_id)
-           }else{
-               //未关注就添加关注
-            const {data}=await addFollow(this.detail.aut_id)
-           }
-           this.detail.is_followed=!this.detail.is_followed
-       } catch (error) {
-           let message='操作失败，请稍后重试'
-           if(error.response && error.response.status===400){
-               message='操作失败，无法关注自己'
-           }
-           this.$toast(message)
-       }
-       this.followLoading=false
+    async onFollow() {
+      this.followLoading = true;
+      try {
+        if (this.detail.is_followed) {
+          //已关注就取消关注
+          const { data } = await deleteFollow(this.detail.aut_id);
+        } else {
+          //未关注就添加关注
+          const { data } = await addFollow(this.detail.aut_id);
+        }
+        this.detail.is_followed = !this.detail.is_followed;
+      } catch (error) {
+        let message = "操作失败，请稍后重试";
+        if (error.response && error.response.status === 400) {
+          message = "操作失败，无法关注自己";
+        }
+        this.$toast(message);
+      }
+      this.followLoading = false;
     },
     // // 对文章表态：attitude -1: 无态度，0-不喜欢，1-点赞（喜欢）=> 3选1
     // // type=> 1 点击了点赞按钮 0 点击了不喜欢按钮
@@ -151,7 +167,6 @@ export default {
     line-height: 2;
   }
   .zan {
-    text-align: center;
     padding: 10px 0;
     .active {
       border-color: red;

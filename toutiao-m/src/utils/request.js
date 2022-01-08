@@ -4,7 +4,7 @@ import axios from 'axios'
 import store from '@/store/index.js'
 
 const request = axios.create({
-    baseURL: 'http://geek.itheima.net', //接口基础路径
+    baseURL: 'http://toutiao.itheima.net', //接口基础路径
 })
 
 // 请求拦截器

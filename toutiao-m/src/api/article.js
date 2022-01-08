@@ -55,3 +55,43 @@ export const addComments = data => {
         data
     })
 }
+
+//文章收藏
+export const addCollect = target => {
+    return request({
+        method: 'POST',
+        url: '/v1_0/article/collections',
+        data: {
+            target
+        }
+    })
+}
+
+//取消文章收藏
+export const deleteCollect = target => {
+    return request({
+        method: 'DELETE',
+        url: `/v1_0/article/collections/${target}`,
+    })
+}
+
+//获取文章收藏列表
+export const getCollection = target => {
+    return request({
+        method: 'GET',
+        url: '/v1_0/article/collections',
+        data: {
+            target
+        }
+    })
+}
+//获取用户阅读历史
+export const getHistory = target => {
+    return request({
+        method: 'GET',
+        url: '/v1_0/user/histories',
+        data: {
+            target
+        }
+    })
+}

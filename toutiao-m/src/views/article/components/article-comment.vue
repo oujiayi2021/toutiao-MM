@@ -13,7 +13,7 @@
         :finished="finished"
         finished-text="没有评论了"
         @load="onLoad"
-        :immediate-check="true"
+        :immediate-check="false"
       >
         <div
           class="item van-hairline--bottom"
@@ -25,16 +25,12 @@
             <p>
               <span class="name">{{ item.aut_name }}</span>
               <van-button 
-              class="zan" 
+              class="zan1" 
               :class="{liked:item.is_liking}"
               :icon="item.is_liking ? 'good-job' : 'good-job-o'"
               @click="onLike(item.com_id,index)"
               :loading="commentLoading"
               >{{item.like_count || '赞'}}</van-button>
-              <!-- <span class="zan" 
-                >{{ item.like_count }}
-                <i class="toutiao icon-a-dianzan2"></i>
-              </span> -->
             </p>
             <p class="cont">{{ item.content }}</p>
             <p>
@@ -47,29 +43,30 @@
           </div>
         </div>
       </van-list>
-    </div>
-
-    <!-- 底部工具 -->
-    <div class="footer van-hairline--top">
-      <div class="input" @click="showInput=true"><i class="van-icon van-icon-edit"></i></div>
-      <div class="btn">
-        <span class="toutiao icon-pinglun"></span>
-        <p>评论</p>
-        <i>0</i>
-      </div>
-      <div class="btn">
-        <span class="toutiao icon-a-dianzan2"></span>
-        <p>点赞</p>
-      </div>
-      <div class="btn">
+       <!-- 底部工具 -->
+        <div class="footer van-hairline--top">
+          <div class="input" @click="showInput = true">
+            <i class="van-icon van-icon-edit">发表评论</i>
+          </div>
+          <div class="btn">
+            <span class="toutiao icon-pinglun"></span>
+            <i>0</i>
+          </div>
+          <div class="btn">
+            <span class="toutiao icon-a-dianzan2"></span>
+          </div>
+          <CollectArticle v-model="source.is_collected" :articleid="source.art_id"></CollectArticle>
+          <!-- <div class="btn">
         <span class="toutiao icon-shoucang"></span>
         <p>收藏</p>
-      </div>
-      <div class="btn">
-        <span class="toutiao icon-a-fenxiang1"></span>
-        <p>分享</p>
-      </div>
+      </div> -->
+          <div class="btn">
+            <span class="toutiao icon-a-fenxiang1"></span>
+          </div>
+        </div>
     </div>
+
+ 
      <!-- 评论&回复 -->
     <van-popup v-model="showInput" position="bottom">
       <van-nav-bar left-arrow @click-left="showInput=false" @click-right="AddComments" title="评论文章" right-text="发表" />
@@ -87,8 +84,12 @@
 </template>
 <script>
 import { getComments,addComments,addCommentLike,deleteCommentLike } from "@/api/article.js";
+import CollectArticle from '@/components/collect-article/index.vue'
 export default {
   name: "ArticleComment",
+  components:{
+    CollectArticle
+  },
   props: {
     source: {
       type: Object,
@@ -132,7 +133,9 @@ export default {
           //没有就讲finished设置结束
           this.finished = true;
         }
-      } catch (error) {}
+      } catch (error) {
+        this.$toast('操作失败，请稍后重试')
+      }
     },
    async onLike(id,index){
      this.commentLoading=true
@@ -172,7 +175,8 @@ export default {
   created() {
     setTimeout(() => {
       this.onLoad();
-    }, 2000);
+      console.clear()
+    }, 500);
   },
 };
 </script>
@@ -206,7 +210,7 @@ export default {
           .name {
             font-size: 16px;
           }
-          .zan {
+          .zan1 {
             font-size: 14px;
             float: right;
             color: #999;
@@ -232,6 +236,7 @@ export default {
             border-radius: 14px;
             color: #666;
             .van-icon {
+              font-size: 18px;
               position: relative;
               top: 1px;
             }
@@ -258,7 +263,7 @@ export default {
       margin-left: 10px;
       width: 200px;
       height: 34px;
-      
+      font-size: 18px;
       border-radius: 17px;
       line-height: 36px;
       padding-left: 10px;
