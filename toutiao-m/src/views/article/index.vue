@@ -45,7 +45,7 @@
       <div class="content" v-html="detail.content"></div>
       <div class="zan">
         <!-- 文章评论列表 -->
-       <ArticleComment :source="detail" />
+          <ArticleComment :source="detail" />
       </div>
       
  

@@ -1,5 +1,5 @@
 <template>
-  <div class="article-list">
+  <div class="article-list" ref="article-list">
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh" :success-text="refreshSuccessText" :success-duration="1500">
         <van-list
         v-model="loading"
@@ -9,7 +9,7 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
         >
-        <ArticleItem v-for="(article,index) in list" :key="index" :article='article'/>
+            <ArticleItem v-for="(article,index) in list" :key="index" :article='article'/>
         <!-- <van-cell v-for="(article,index) in list" :key="index" :title="article.title" /> -->
         </van-list>
     </van-pull-refresh>
@@ -19,6 +19,7 @@
 <script>
 import {getArticles} from '@/api/article.js'
 import ArticleItem from '@/components/article-item/index.vue'
+import {debounce} from 'lodash'
 
 export default {
     name:"Articlelist",
@@ -39,7 +40,8 @@ export default {
             timestamp:null, //请求获取下一页数据的时间戳
             error:false,  //控制列表请求失败的提示状态
             isLoading: false,
-            refreshSuccessText:''  //下拉刷新成功提示文本
+            refreshSuccessText:''  ,//下拉刷新成功提示文本
+            scrollTop:0   //列表到顶部的距离
         };
     },
      methods: {
@@ -115,6 +117,17 @@ export default {
         }
     },
   },
+  activated(){
+      //从缓存中被激活
+      //把记录的到顶部的距离设置回去
+      this.$refs['article-list'].scrollTop=this.scrollTop
+  },
+  mounted(){
+      const articleList=this.$refs['article-list']
+      articleList.onscroll =debounce(()=>{
+         this.scrollTop=articleList.scrollTop
+      },50)
+  }
 }
 </script>
 

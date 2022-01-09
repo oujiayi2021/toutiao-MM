@@ -55,7 +55,7 @@
           <div class="btn">
             <span class="toutiao icon-a-dianzan2"></span>
           </div>
-          <CollectArticle v-model="source.is_collected" :articleid="source.art_id"></CollectArticle>
+            <CollectArticle v-model="source.is_collected" :articleid="source.art_id"></CollectArticle>
           <!-- <div class="btn">
         <span class="toutiao icon-shoucang"></span>
         <p>收藏</p>
@@ -176,7 +176,7 @@ export default {
     setTimeout(() => {
       this.onLoad();
       console.clear()
-    }, 500);
+    }, 1000);
   },
 };
 </script>

@@ -20,7 +20,7 @@
     <van-tabs class="channel-tab" v-model="active" animated swipeable>
       <van-tab v-for="item in channels" :title="item.name" :key="item.id">
         <!-- 文章列表 -->
-        <Articlelist :channel="item" />
+  <Articlelist :channel="item" />
         <!-- 文章列表 -->
       </van-tab>
       <!-- 占位元素 -->
@@ -44,10 +44,10 @@
       :style="{ height: '100%' }"
     >
       <ChannelEdit
-        :my-channels="channels"
-        :active="active"
-        @update-active="onUpdateActive"
-      />
+          :my-channels="channels"
+          :active="active"
+          @update-active="onUpdateActive"
+        />
     </van-popup>
     <!-- 频道编辑弹出层 -->
   </div>

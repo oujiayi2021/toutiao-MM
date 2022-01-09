@@ -103,8 +103,11 @@ export default {
             // console.log('登录成功',res)
             this.$store.commit('setUser', data.data); //将用户登录后的Token储存到vuex中
             this.$toast.success('登录成功')
+            //清除Layout的缓存，让它重新渲染
+            this.$store.commit('removeCachePage','LayoutIndex')
             //登录成功跳转回原来页面
-            this.$router.back()
+            // this.$router.back()
+            this.$router.push(this.$route.query.redirect || '/')
         }catch(err){
             if(err.response.status===400){
                 // console.log('手机号或者验证码错误')

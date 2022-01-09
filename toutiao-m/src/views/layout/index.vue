@@ -1,7 +1,8 @@
 <template>
   <div class="layout-container">
-      <router-view></router-view>
-
+      <keep-alive>
+          <router-view></router-view>
+      </keep-alive>
       <!-- 标签导航栏 -->
 <van-tabbar class="layout-tabbar" route>
   <van-tabbar-item to='/'>
@@ -33,6 +34,10 @@ export default {
            
         };
     },
+    mounted(){
+        this.$store.commit('addCachePage','LayoutIndex')
+        //当Layout组件被渲染后让它再缓存起来
+    }
 }
 </script>
 
